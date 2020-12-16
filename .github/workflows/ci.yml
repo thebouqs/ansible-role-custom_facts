@@ -8,7 +8,7 @@ name: "Lint, and Functional Testing"
 
 defaults:
   run:
-    working-directory: 'sshd'
+    working-directory: 'custom_facts'
 
 jobs:
   molecule:
@@ -31,7 +31,7 @@ jobs:
       - name: "Clone Repo"
         uses: actions/checkout@v2
         with:
-          path: 'sshd'
+          path: 'custom_facts'
       - name: "Setup Python 3"
         uses: actions/setup-python@v2
         with:
