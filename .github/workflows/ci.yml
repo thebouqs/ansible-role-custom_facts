@@ -52,9 +52,10 @@ jobs:
           status: RUNNING
           color: warning
       - name: "Run Tests"
-        run: molecule test --parallel -s ${{ matrix.scenario }}
+        run: molecule test -s ${{ matrix.scenario }}
         env:
           PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
       - name: "Notify Slack Success"
         if: success()
         env:
