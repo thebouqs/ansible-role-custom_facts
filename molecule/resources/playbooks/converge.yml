@@ -1,0 +1,11 @@
+---
+- hosts: all
+  tasks:
+    - debug:
+        msg: >-
+          Testing with Ansible {{ ansible_version.full }}
+          using Python {{ ansible_python_version }}
+          on {{ ansible_distribution }}-{{ ansible_distribution_version }}
+          as {{ ansible_user_id }}
+    - include_role:
+        name: custom_facts

@@ -1,0 +1,87 @@
+---
+name: "Lint, and Functional Testing"
+"on":
+  pull_request:
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    working-directory: 'sshd'
+
+jobs:
+  molecule:
+    name: "Molecule Testing"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - scenario: default
+    steps:
+      - name: "Notfiy Slack Start"
+        id: slack
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_GITHUB_ACTIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          channel_id: C3JMU73ME  # devops-events
+          status: STARTING
+          color: good
+      - name: "Clone Repo"
+        uses: actions/checkout@v2
+        with:
+          path: 'sshd'
+      - name: "Setup Python 3"
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: "Install Testing Tools"
+        run: |
+          pip3 install --upgrade pip setuptools
+          pip3 install wheel
+          pip3 install -r requirements-test.txt
+      - name: "Notify Slack Running"
+        if: success()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_GITHUB_ACTIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          message_id: ${{ steps.slack.outputs.message_id }}
+          channel_id: C3JMU73ME  # devops-events
+          status: RUNNING
+          color: warning
+      - name: "Run Tests"
+        run: molecule test --parallel -s ${{ matrix.scenario }}
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+      - name: "Notify Slack Success"
+        if: success()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_GITHUB_ACTIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          message_id: ${{ steps.slack.outputs.message_id }}
+          channel_id: C3JMU73ME  # devops-events
+          status: SUCCESS
+          color: good
+      - name: "Notify Slack Failure"
+        if: failure()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_GITHUB_ACTIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          message_id: ${{ steps.slack.outputs.message_id }}
+          channel_id: C3JMU73ME  # devops-events
+          status: FAILURE
+          color: danger
+      - name: "Notify Slack Failure"
+        if: failure()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_GITHUB_ACTIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          channel_id: C3HCFGBU0  # devops-alerts
+          status: FAILURE
+          color: danger

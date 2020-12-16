@@ -1,0 +1,34 @@
+---
+# install/main tasks for custom_facts
+# vim set ft: yaml.ansible
+#
+
+- name: >
+    "Ensure: {{ custom_facts_path }} is {{ custom_facts_path_state }}"
+  file:
+    path: "{{ custom_facts_path }}"
+    state: "{{ custom_facts_path_state }}"
+    owner: "{{ custom_facts_path_owner }}"
+    group: "{{ custom_facts_path_group }}"
+    mode: "{{ custom_facts_path_mode }}"
+    recurse: "{{ true if custom_facts_path_state == 'absent' else omit }}"
+  become: true
+
+- include_tasks: "install/{{ item.1.type }}.yml"
+  when: item.1 | length > 0
+  vars:
+    packages: "{{ item.1.packages }}"
+  loop: "{{ custom_facts | subelements('dependencies') }}"
+
+- name: >
+    "Deploy Custom Facts"
+  copy:
+    dest: "{{ custom_facts_path }}/{{ item.key }}.fact"
+    src: "{{ item.key }}.fact"
+    owner: "{{ ansible_user_id }}"
+    mode: 'ug=rx,o-rwx'
+  become: true
+  when:
+    - item.value.state == 'present'
+    - custom_facts_path_state != 'absent'
+  loop: "{{ custom_facts | dict2items }}"

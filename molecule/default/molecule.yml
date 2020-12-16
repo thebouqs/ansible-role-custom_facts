@@ -1,0 +1,127 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+  options:
+    vv: true
+    D: true
+  config_options:
+    defaults:
+      stdout_callback: debug
+  env:
+    ANSIBLE_USER: ansible
+    SUDO_GROUP: wheel
+    DEPLOY_GROUP: deployer
+lint: |
+  yamllint .
+  ansible-lint
+  flake8
+platforms:
+  - name: CentOS_7
+    image: centos:7
+    # pre_build_image: true
+    dockerfile: ../resources/Dockerfile.j2
+    command: /usr/sbin/init
+    privileged: true
+    capabilities:
+      - SYS_ADMIN
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+    env:
+      ANSIBLE_USER: ansible
+      SUDO_GROUP: wheel
+      DEPLOY_GROUP: deployer
+      container: docker
+  - name: AmazonLinux_2
+    image: amazonlinux:2
+    # pre_build_image: true
+    dockerfile: ../resources/Dockerfile.j2
+    command: /usr/sbin/init
+    privileged: true
+    capabilities:
+      - SYS_ADMIN
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+    env:
+      ANSIBLE_USER: ansible
+      SUDO_GROUP: wheel
+      DEPLOY_GROUP: deployer
+      container: docker
+  - name: Debian_buster
+    image: debian:buster
+    # pre_build_image: true
+    dockerfile: ../resources/Dockerfile.j2
+    command: /sbin/init
+    privileged: true
+    capabilities:
+      - SYS_ADMIN
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+    env:
+      ANSIBLE_USER: ansible
+      SUDO_GROUP: wheel
+      DEPLOY_GROUP: deployer
+      container: docker
+  - name: Ubuntu_bionic
+    image: ubuntu:bionic
+    # pre_build_image: true
+    dockerfile: ../resources/Dockerfile.j2
+    command: /sbin/init
+    privileged: true
+    capabilities:
+      - SYS_ADMIN
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+    env:
+      ANSIBLE_USER: ansible
+      SUDO_GROUP: wheel
+      DEPLOY_GROUP: deployer
+      container: docker
+  - name: Ubuntu_focal
+    image: ubuntu:focal
+    # pre_build_image: true
+    dockerfile: ../resources/Dockerfile.j2
+    command: /sbin/init
+    privileged: true
+    capabilities:
+      - SYS_ADMIN
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+    env:
+      ANSIBLE_USER: ansible
+      SUDO_GROUP: wheel
+      DEPLOY_GROUP: deployer
+      container: docker
+provisioner:
+  name: ansible
+  options:
+    vv: true
+    D: true
+  config_options:
+    defaults:
+      stdout_callback: debug
+  inventory:
+    links:
+      hosts: ../resources/inventory/hosts.yml
+      group_vars: ../resources/inventory/group_vars/
+      host_vars: ../resources/inventory/host_vars/
+  playbooks:
+    converge: ../resources/playbooks/converge.yml
+verifier:
+  name: testinfra

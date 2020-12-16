@@ -1,0 +1,19 @@
+---
+# main tasks file for custom_facts
+#
+- name: >
+    "Include Distribution Family Specific Variables: {{ ansible_os_family }}"
+  include_vars: "vars/{{ ansible_os_family }}.yml"
+
+- name: "Include Distribution Specific Variables: {{ ansible_distribution }}"
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "vars/{{ ansible_distribution }}.yml"
+    - "vars/blank.yml"
+
+- import_tasks: params/main.yml
+
+- import_tasks: install/main.yml
+
+- name: "Gather Custom Facts"
+  setup:

@@ -1,0 +1,6 @@
+---
+_custom_facts_path: '/etc/ansible/facts.d'
+_custom_facts_path_state: 'directory'
+_custom_facts_path_owner: 'root'
+_custom_facts_path_group: 'root'
+_custom_facts_path_mode: 'u=rwx,go=rx'

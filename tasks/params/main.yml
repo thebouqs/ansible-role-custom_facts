@@ -1,0 +1,28 @@
+---
+# params/main tasks for custom_facts
+# vim set ft=yaml.ansible
+#
+
+- name: "Set Default: custom_facts_path"
+  set_fact:
+    custom_facts_path: "{{ _custom_facts_path }}"
+  when:
+    - custom_facts_path | length == 0
+
+- name: "Set Default: custom_facts_path_owner"
+  set_fact:
+    custom_facts_path_owner: "{{ _custom_facts_path_owner }}"
+  when:
+    - custom_facts_path_owner | length == 0
+
+- name: "Set Default: custom_facts_path_group"
+  set_fact:
+    custom_facts_path_group: "{{ _custom_facts_path_group }}"
+  when:
+    - custom_facts_path_group | length == 0
+
+- name: "Set Default: custom_facts_path_mode"
+  set_fact:
+    custom_facts_path_mode: "{{ _custom_facts_path_mode }}"
+  when:
+    - custom_facts_path_mode | length == 0

@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  role_name: custom_facts
+  author: The Bouqs Company DevOps
+  description: >
+    This role will deploy custom facts
+    for gathering additionall data about managed hosts
+  company: The Bouqs Company (bouqs.com)
+  license: BSD
+  min_ansible_version: 2.7
+
+  platforms:
+    - {name: CentOS, versions: [7]}
+
+    - {name: AmazonLinux, versions: [2]}
+
+    - {name: Debian, versions: [buster]}
+
+    - {name: Ubuntu, versions: [bionic, focal]}
+
+
+  galaxy_tags: []
+dependencies: []

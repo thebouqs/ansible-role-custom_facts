@@ -1,0 +1,11 @@
+---
+custom_facts:
+  users:
+    state: 'present'
+    dependencies: []
+
+custom_facts_path: ''
+custom_facts_path_state: 'directory'
+custom_facts_path_owner: ''
+custom_facts_path_group: ''
+custom_facts_path_mode: ''

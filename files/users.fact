@@ -1,0 +1,17 @@
+#!/usr/bin/env python3
+# vim set ft:python
+"""
+A custom ansible fact for gathering all the users on a host
+"""
+
+try:
+    import pwd
+except ImportError as err:
+    print(err)
+import json
+
+if __name__ == '__main__':
+    users = list()
+    for user in pwd.getpwall():
+        users.append({ 'name': user.pw_name, 'home': user.pw_dir, 'shell': user.pw_shell })
+    print(json.dumps(users))
