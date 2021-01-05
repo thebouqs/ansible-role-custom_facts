@@ -9,3 +9,5 @@
           as {{ ansible_user_id }}
     - include_role:
         name: custom_facts
+    - debug:
+        msg: "{{ ansible_local.users }}"

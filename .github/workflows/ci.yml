@@ -8,7 +8,7 @@ name: "Lint, and Functional Testing"
 
 defaults:
   run:
-    working-directory: 'sshd'
+    working-directory: 'custom_facts'
 
 jobs:
   molecule:
@@ -31,7 +31,7 @@ jobs:
       - name: "Clone Repo"
         uses: actions/checkout@v2
         with:
-          path: 'sshd'
+          path: 'custom_facts'
       - name: "Setup Python 3"
         uses: actions/setup-python@v2
         with:
@@ -40,7 +40,7 @@ jobs:
         run: |
           pip3 install --upgrade pip setuptools
           pip3 install wheel
-          pip3 install -r requirements-test.txt
+          pip3 install -r requirements.txt
       - name: "Notify Slack Running"
         if: success()
         env:
@@ -52,7 +52,7 @@ jobs:
           status: RUNNING
           color: warning
       - name: "Run Tests"
-        run: molecule test --parallel -s ${{ matrix.scenario }}
+        run: molecule test -s ${{ matrix.scenario }}
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
